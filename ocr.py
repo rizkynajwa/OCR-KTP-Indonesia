@@ -154,7 +154,7 @@ def return_id_number(image, img_gray):
         print(e)
 
     if check_nik == True:
-        img_mod = cv2.imread("images/module2.png")
+        img_mod = cv2.imread("data/module2.png")
 
         ref = cv2.cvtColor(img_mod, cv2.COLOR_BGR2GRAY)
         ref = cv2.threshold(ref, 66, 255, cv2.THRESH_BINARY_INV)[1]
