@@ -10,7 +10,7 @@ from datetime import date
 from operator import itemgetter, attrgetter
 
 ROOT_PATH = os.getcwd()
-# IMAGE_PATH = os.path.join(ROOT_PATH, 'images/Kywa.jpg')
+# IMAGE_PATH = os.path.join(ROOT_PATH, 'Kywa.jpg')
 LINE_REC_PATH = os.path.join(ROOT_PATH, 'data/ID_CARD_KEYWORDS.csv')
 CITIES_REC_PATH = os.path.join(ROOT_PATH, 'data/CITIES.csv')
 RELIGION_REC_PATH = os.path.join(ROOT_PATH, 'data/RELIGIONS.csv')
@@ -59,50 +59,17 @@ def automatic_brightness_and_contrast(image, clip_hist_percent=10):
     beta = -minimum_gray * alpha
 
     auto_result = convertScale(image, alpha=alpha, beta=beta)
+    # auto_result = cv2.convertScaleAbs(image, alpha=alpha, beta=beta)
     return auto_result
-
-def increase_brightness(img, value=10):
-    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-    h, s, v = cv2.split(hsv)
-
-    lim = 255 - value
-    v[v > lim] = 255
-    v[v <= lim] += value
-
-    final_hsv = cv2.merge((h, s, v))
-    img = cv2.cvtColor(final_hsv, cv2.COLOR_HSV2BGR)
-
-    return img
-
-def check_brightness(im_file):
-    hsv = cv2.cvtColor(im_file, cv2.COLOR_BGR2HSV)
-    h, s, v = cv2.split(hsv)
-
-    br_val = cv2.mean(v)[0]
-    print(br_val)
-
-    return int(br_val)
-
-def clahe_process(image):
-    lab = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
-    l, a, b = cv2.split(lab)
-
-    clahe = cv2.createCLAHE(clipLimit=1.0, tileGridSize=(8,8))
-    cl = clahe.apply(l)
-
-    limg = cv2.merge((cl, a, b))
-    final = cv2.cvtColor(limg, cv2.COLOR_LAB2BGR)
-
-    return final
 
 # ------------------------------------------------------------------------------
 
 def ocr_raw(image):
     # img_raw = cv2.imread(image_path)
-    # img_raw = increase_brightness(img_raw)
-    # image = clahe_process(image)
     # image = automatic_brightness_and_contrast(image)
+
     image = cv2.resize(image, (50 * 16, 500))
+
     # cv2.imshow("test1", image)
     image = automatic_brightness_and_contrast(image)
     # cv2.imshow("test2", image)
@@ -110,14 +77,9 @@ def ocr_raw(image):
     # cv2.destroyAllWindows()
 
     img_gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
-    # img_hist = cv2.equalizeHist(img_gray)
-    # id_number = return_id_number(image, img_hist)
     id_number = return_id_number(image, img_gray)
-
     cv2.fillPoly(img_gray, pts=[np.asarray([(540, 150), (540, 499), (798, 499), (798, 150)])], color=(255, 255, 255))
-    #NOTE: Terakhir disini
-    th, threshed = cv2.threshold(img_gray, 127, 255, cv2.THRESH_TRUNC)
-
+    th, threshed = cv2.threshold(img_gray, 150, 255, cv2.THRESH_TRUNC)
     result_raw = pytesseract.image_to_string(threshed, lang="ind")
 
     return result_raw, id_number
@@ -254,14 +216,6 @@ def return_id_number(image, img_gray):
         return ""
 
 def main(image):
-    # check_result = check_brightness(image)
-    #
-    # if check_result < 170:
-    #     value = 170 - check_result
-    #     image = increase_brightness(image, value)
-    #     check_result2 = check_brightness(image)
-    #     print(check_result2)
-
     raw_df = pd.read_csv(LINE_REC_PATH, header=None)
     cities_df = pd.read_csv(CITIES_REC_PATH, header=None)
     religion_df = pd.read_csv(RELIGION_REC_PATH, header=None)
@@ -275,7 +229,7 @@ def main(image):
     tempat_lahir = ""
     tgl_lahir = ""
 
-    print("NIK: " + str(id_number))
+    # print("NIK: " + str(id_number))
 
     loc2index = dict()
     for i, tmp_line in enumerate(result_list):
@@ -330,9 +284,6 @@ def main(image):
                     tmp_data[tmp_index + 1] = cities_df[0].values[arg_max]
 
         if 'Nama' in tmp_data:
-            # if '-' in tmp_data:
-            #     tmp_data.remove('-')
-
             nama = ' '.join(tmp_data[2:])
             nama = re.sub('[^A-Z. ]', '', nama)
 
@@ -389,7 +340,6 @@ def main(image):
                 if "i" in tmp_data[tmp_index]:
                     tmp_data[tmp_index] = tmp_data[tmp_index].replace("i", "I")
 
-            print(tmp_data)
         if 'Jenis' in tmp_data or 'Kelamin' in tmp_data:
             for tmp_index, tmp_word in enumerate(tmp_data[2:]):
                 tmp_sim_list = [textdistance.damerau_levenshtein.normalized_similarity(tmp_word, tmp_word_) for tmp_word_ in jenis_kelamin_df[0].values]
@@ -401,7 +351,6 @@ def main(image):
                     tmp_data[tmp_index + 2] = jenis_kelamin_df[0].values[arg_max]
 
         if 'Tempat' in tmp_data or 'Tgl' in tmp_data or 'Lahir' in tmp_data:
-            print(tmp_data)
             join_tmp = ' '.join(tmp_data)
 
             match_tgl1 = re.search("([0-9]{2}\-[0-9]{2}\-[0-9]{4})", join_tmp)
@@ -410,17 +359,29 @@ def main(image):
             match_tgl4 = re.search("([0-9]{2}\ [0-9]{2}\-[0-9]{4})", join_tmp)
 
             if match_tgl1:
-                tgl_lahir = datetime.datetime.strptime(match_tgl1.group(), '%d-%m-%Y').date()
-                tgl_lahir = tgl_lahir.strftime('%d-%m-%Y')
+                try:
+                    tgl_lahir = datetime.datetime.strptime(match_tgl1.group(), '%d-%m-%Y').date()
+                    tgl_lahir = tgl_lahir.strftime('%d-%m-%Y')
+                except:
+                    tgl_lahir = ""
             elif match_tgl2:
-                tgl_lahir = datetime.datetime.strptime(match_tgl2.group(), '%d %m %Y').date()
-                tgl_lahir = tgl_lahir.strftime('%d-%m-%Y')
+                try:
+                    tgl_lahir = datetime.datetime.strptime(match_tgl2.group(), '%d %m %Y').date()
+                    tgl_lahir = tgl_lahir.strftime('%d-%m-%Y')
+                except:
+                    tgl_lahir = ""
             elif match_tgl3:
-                tgl_lahir = datetime.datetime.strptime(match_tgl3.group(), '%d-%m %Y').date()
-                tgl_lahir = tgl_lahir.strftime('%d-%m-%Y')
+                try:
+                    tgl_lahir = datetime.datetime.strptime(match_tgl3.group(), '%d-%m %Y').date()
+                    tgl_lahir = tgl_lahir.strftime('%d-%m-%Y')
+                except:
+                    tgl_lahir = ""
             elif match_tgl4:
-                tgl_lahir = datetime.datetime.strptime(match_tgl4.group(), '%d %m-%Y').date()
-                tgl_lahir = tgl_lahir.strftime('%d-%m-%Y')
+                try:
+                    tgl_lahir = datetime.datetime.strptime(match_tgl4.group(), '%d %m-%Y').date()
+                    tgl_lahir = tgl_lahir.strftime('%d-%m-%Y')
+                except:
+                    tgl_lahir = ""
             else:
                 tgl_lahir = ""
 
