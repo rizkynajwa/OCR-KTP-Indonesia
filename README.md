@@ -43,6 +43,23 @@ or alternatively using this command:
 python api.py
 ```
 
+### Request Parameter
+Parameter | Data Type | Mandatory | Notes
+--- | --- | --- | ---
+image | Image Files | M | Foto KTP
+
+### Response Parameters
+
+Parameter | Notes
+--- | ---
+nik | NIK dari hasil OCR
+nama | Nama dari hasil OCR
+tempat_lahir | Nama tempat lahir dari hasil OCR
+tgl_lahir | Tanggal lahir dari hasil OCR (DD-MM-YYYY)
+time_elapsed | Waktu yang pemrosesan yang dibutuhkan (detik)
+
+### Success Response Example
+
 ### Notes for KTP Detection using YOLO
 1. Uncomment on line 7 and 29 in ```api.py```
 2. Download trained weights [here]() and put in data/yolo/ folder
