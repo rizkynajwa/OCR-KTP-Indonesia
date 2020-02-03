@@ -4,14 +4,14 @@ import time
 import cv2
 import os
 
-labelsPath = "data/yolo/ktp2-obj.names"
+labelsPath = "data/yolo/ktp-obj.names"
 LABELS = open(labelsPath).read().strip().split("\n")
 
 np.random.seed(42)
 COLORS = np.random.randint(0, 255, size=(len(LABELS), 3), dtype="uint8")
 
-weightsPath = "data/yolo/ktp2-yolov3-train_3000.weights"
-configPath = "data/yolo/ktp2-yolov3-run.cfg"
+weightsPath = "data/yolo/ktp-yolov3-train_3000.weights"
+configPath = "data/yolo/ktp-yolov3-run.cfg"
 
 net = cv2.dnn.readNetFromDarknet(configPath, weightsPath)
 ln = net.getLayerNames()
