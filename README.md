@@ -45,7 +45,7 @@ python api.py
 
 ### Request Parameter
 Parameter | Data Type | Mandatory | Notes
---- | --- | --- | ---
+--- | --- | :---: | ---
 image | Image Files | M | Foto KTP
 
 ### Response Parameters
