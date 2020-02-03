@@ -59,6 +59,15 @@ tgl_lahir | Tanggal lahir dari hasil OCR (DD-MM-YYYY)
 time_elapsed | Waktu yang pemrosesan yang dibutuhkan (detik)
 
 ### Success Response Example
+```
+{
+  "nik": "1203040101900001"
+  "nama" : "JOHN DOE"
+  "tempat_lahir" : "JAKARTA"
+  "tgl_lahir" : "01-01-1990"
+  "time_elapsed" : "0.675"
+}
+```
 
 ### Notes for KTP Detection using YOLO
 1. Uncomment on line 7 and 29 in ```api.py```
