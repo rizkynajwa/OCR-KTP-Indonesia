@@ -79,7 +79,7 @@ def ocr_raw(image):
     img_gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
     id_number = return_id_number(image, img_gray)
     cv2.fillPoly(img_gray, pts=[np.asarray([(540, 150), (540, 499), (798, 499), (798, 150)])], color=(255, 255, 255))
-    th, threshed = cv2.threshold(img_gray, 150, 255, cv2.THRESH_TRUNC)
+    th, threshed = cv2.threshold(img_gray, 127, 255, cv2.THRESH_TRUNC)
     result_raw = pytesseract.image_to_string(threshed, lang="ind")
 
     return result_raw, id_number
