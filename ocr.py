@@ -71,12 +71,14 @@ def ocr_raw(image):
     image = cv2.resize(image, (50 * 16, 500))
 
     # cv2.imshow("test1", image)
-    image = automatic_brightness_and_contrast(image)
+    # image = automatic_brightness_and_contrast(image)
     # cv2.imshow("test2", image)
     # cv2.waitKey(0)
     # cv2.destroyAllWindows()
 
     img_gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+    # img_gray = cv2.equalizeHist(img_gray)
+    # img_gray = cv2.fastNlMeansDenoising(img_gray, None, 3, 7, 21)
     id_number = return_id_number(image, img_gray)
     cv2.fillPoly(img_gray, pts=[np.asarray([(540, 150), (540, 499), (798, 499), (798, 150)])], color=(255, 255, 255))
     th, threshed = cv2.threshold(img_gray, 127, 255, cv2.THRESH_TRUNC)

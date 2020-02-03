@@ -3,7 +3,7 @@ import json
 import numpy as np
 import ocr
 import time
-import yolo_detect
+# import yolo_detect
 
 from flask import Flask, request
 
