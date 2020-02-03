@@ -4,7 +4,6 @@ import numpy as np
 import ocr
 import time
 # import yolo_detect
-
 from flask import Flask, request
 
 app = Flask(__name__)

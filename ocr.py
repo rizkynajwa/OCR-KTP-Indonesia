@@ -69,10 +69,11 @@ def ocr_raw(image):
     # image = automatic_brightness_and_contrast(image)
 
     image = cv2.resize(image, (50 * 16, 500))
-
     # cv2.imshow("test1", image)
+
     # image = automatic_brightness_and_contrast(image)
     # cv2.imshow("test2", image)
+
     # cv2.waitKey(0)
     # cv2.destroyAllWindows()
 
