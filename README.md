@@ -1,6 +1,6 @@
 # OCR-KTP-Indonesia
 
-### Prerequisites
+## Prerequisites
 * Flask
 ```
 pip install flask
@@ -17,15 +17,15 @@ pip install opencv-contrib-python
 ```
 pip install flask
 ```
+* PIL
+```
+pip install pillow
+```
 * PyTesseract
 ```
 sudo apt-get install tesseract-ocr
 sudo apt-get install tesseract-ocr-ind
 pip install pytesseract
-```
-* PIL
-```
-pip install pillow
 ```
 * TextDistance
 ```
@@ -48,7 +48,7 @@ Parameter | Data Type | Mandatory | Notes
 --- | --- | :---: | ---
 image | Image Files | M | Foto KTP
 
-### Response Parameters
+### Response Parameter
 
 Parameter | Notes
 --- | ---
