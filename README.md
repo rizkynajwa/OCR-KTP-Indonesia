@@ -33,7 +33,7 @@ pip install textdistance
 ```
 
 ## Running the Program
-To run the program, use command below:
+To run the program, use the command below:
 ```
 export FLASK_APP=api.py
 flask run
