@@ -51,7 +51,7 @@ image | Image Files | M | Foto KTP
 
 ### Response Parameter
 
-Parameter | Notes
+Parameter | Description
 --- | ---
 nik | NIK dari hasil OCR
 nama | Nama dari hasil OCR
