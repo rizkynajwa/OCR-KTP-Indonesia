@@ -16,7 +16,7 @@ pip install opencv-contrib-python
 ```
 * Pandas
 ```
-pip install flask
+pip install pandas
 ```
 * PIL
 ```
